@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Resource Links</title>
+
   <style>
     :root {
       --bg: #f7f7fb;
@@ -13,6 +15,8 @@
       --accent: #2563eb;
       --accent-dark: #1d4ed8;
       --border: #e5e7eb;
+      --danger: #b91c1c;
+      --success: #047857;
     }
 
     * {
@@ -28,7 +32,7 @@
     }
 
     .page {
-      max-width: 900px;
+      max-width: 950px;
       margin: 0 auto;
       padding: 48px 20px;
     }
@@ -57,7 +61,7 @@
 
     .links-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 18px;
     }
 
@@ -79,6 +83,21 @@
       margin: 0 0 18px;
     }
 
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+
     .button {
       display: inline-block;
       background: var(--accent);
@@ -87,6 +106,9 @@
       padding: 11px 16px;
       border-radius: 999px;
       font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
     }
 
     .button:hover,
@@ -94,6 +116,30 @@
       background: var(--accent-dark);
       outline: 3px solid rgba(37, 99, 235, 0.25);
       outline-offset: 3px;
+    }
+
+    .message {
+      margin-top: 12px;
+      font-size: 0.95rem;
+    }
+
+    .error {
+      color: var(--danger);
+    }
+
+    .success {
+      color: var(--success);
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 0.85rem;
+      font-weight: 700;
     }
 
     footer {
@@ -104,58 +150,221 @@
     }
   </style>
 </head>
+
 <body>
   <main class="page">
     <header>
       <h1>Resource Links</h1>
       <p class="subtitle">
-        Use this page to quickly access shared folders and downloadable resources.
+        Use this page to access shared folders and downloadable resources.
       </p>
     </header>
 
     <section aria-labelledby="main-links">
       <h2 id="main-links" class="section-title">Shared Folders</h2>
 
-      <div class="links-grid">
-         <article class="card">
-          <h2>AAC Images - Mott</h2>
-          <p>Proloquo2Go button images from Mott iPad for download.</p>
-          <a class="button" href="https://drive.google.com/drive/folders/1AinXBFzxqsVrbdCc7sOfygjUxeLnU2Tg?usp=drive_link" target="_blank" rel="noopener">
-            Open folder
-          </a>
-        </article>
-   <!--     
-        <article class="card">
-          <h2>SpeakGridAAC Icon Images</h2>
-          <p>Folder of downloadable icon images for custom SpeakGridAAC boards.</p>
-          <a class="button" href="https://drive.google.com/drive/folders/1Hs6b_libMg0jw5-qcBKK85oK4Qoz65zP?usp=sharing" target="_blank" rel="noopener">
-            Open folder
-          </a>
-        </article>
-      
-        <article class="card">
-          <h2>Adaptive Gaming Resources</h2>
-          <p>A list of documents on adaptive & therapeutic use of gaming</p>
-          <a class="button" href="https://drive.google.com/drive/folders/1CbnW-35ySs0gBVPfgAFlwyA9PQtRwYyu?usp=drive_link" target="_blank" rel="noopener">
-            Open folder
-          </a>
-        </article>   
-        
- <!-- ADDITIONAL FOLDERS!!! copy & paste below block and move above the comment notation <!- -and- ->
-        <article class="card">
-          <h2>ADDITIONAL FOLDER NAME HERE</h2>
-          <p>Brief description of what is inside this folder.</p>
-          <a class="button" href="PASTE_RESOURCE_LINK_HERE" target="_blank" rel="noopener">
-            Open folder
-          </a>
-        </article>  
--->
-      </div>
+      <div class="links-grid" id="linksGrid"></div>
     </section>
-    
+
     <footer>
       Last updated: June 2026
     </footer>
   </main>
+
+  <script>
+    /*
+      HOW TO EDIT THIS PAGE:
+
+      For an open/public folder, use:
+
+      {
+        title: "Public Folder",
+        description: "Description here.",
+        type: "open",
+        url: "PASTE_GOOGLE_DRIVE_LINK_HERE"
+      }
+
+      For a passcode-protected folder, use:
+
+      {
+        title: "Protected Folder",
+        description: "Description here.",
+        type: "protected",
+        encryptedUrl: "PASTE_ENCRYPTED_URL_FROM_GENERATOR_HERE"
+      }
+
+      Generate encryptedUrl values using make-encrypted-link.html.
+    */
+
+    const resources = [
+      {
+        title: "Mott iPad button images for download",
+        description: "Mott iPad button images",
+        type: "protected",
+        encryptedUrl: "eyJzYWx0IjoiMkNQNGVBaklrU2Q4ZHhjb3Zqc2JjUT09IiwiaXYiOiJJaXZYVkpaU3pZTVlKWDBVIiwiZGF0YSI6InJ3blpMUlBvRlFmb0Nva2RtdTZaN0taQy9GZHptVE1JUTcwR0RSRkRWNUpJamZXMTEyUWVIay9TTzU2bjF5dktYczZVcVYrcE1iTllseFRsa3d0VFNLckVCVFRLVEFQaFVUUUVWM2l0Zy9FZnNQK1hBZ3NXa2g4OTBNY1dEeXBZYmtKMFA5Kzh0dz09In0="
+      },   
+      {
+        title: "Public Resources - Adaptive Gaming",
+        description: "This folder does not require a passcode.",
+        type: "open",
+        url: "https://drive.google.com/drive/folders/1CbnW-35ySs0gBVPfgAFlwyA9PQtRwYyu?usp=drive_link"
+      },
+      {
+        title: "AAC button images",
+        description: "button images for download from Mott iPad",
+        type: "protected",
+        encryptedUrl: "eyJzYWx0IjoiWGs5bEFZZDc0TGt2aEJlQXBQNDlCZz09IiwiaXYiOiJOdFErUEU5TzJVMEVjNTJFIiwiZGF0YSI6InVuaHRGMDFFM3hEMG5vckt4Z2NxbHFCTElRQWYrcnBEVXZWdWxtbHNjb1pLczlqdzI5QWc1Zkt4bzgyVDNMTG9SZkc2cysyRjVYbFJGMWNQVHh2VGZCc2UrTGNrSU85VDZpNm4velRNR2t6aXNGclNpN2lJVVl5VDBndDRDZTVoRVhFbEI4MWNJUT09In0="
+      }
+    ];
+
+    const linksGrid = document.getElementById("linksGrid");
+
+    function createResourceCard(resource, index) {
+      const card = document.createElement("article");
+      card.className = "card";
+
+      const title = document.createElement("h2");
+      title.textContent = resource.title;
+
+      const description = document.createElement("p");
+      description.textContent = resource.description;
+
+      card.appendChild(title);
+      card.appendChild(description);
+
+      if (resource.type === "open") {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = "Open access";
+
+        const link = document.createElement("a");
+        link.className = "button";
+        link.href = resource.url;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "Open folder";
+
+        card.appendChild(tag);
+        card.appendChild(document.createElement("br"));
+        card.appendChild(link);
+      }
+
+      if (resource.type === "protected") {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = "Passcode protected";
+
+        const label = document.createElement("label");
+        label.setAttribute("for", `passcode-${index}`);
+        label.textContent = "Passcode";
+
+        const input = document.createElement("input");
+        input.type = "password";
+        input.id = `passcode-${index}`;
+        input.placeholder = "Enter passcode";
+
+        const button = document.createElement("button");
+        button.className = "button";
+        button.textContent = "Unlock folder";
+
+        const message = document.createElement("div");
+        message.className = "message";
+        message.setAttribute("aria-live", "polite");
+
+        button.addEventListener("click", async () => {
+          message.textContent = "";
+          message.className = "message";
+
+          try {
+            const url = await decryptUrl(resource.encryptedUrl, input.value);
+
+            if (!url.startsWith("https://")) {
+              throw new Error("Invalid decrypted link.");
+            }
+
+            message.textContent = "Passcode accepted. Opening folder...";
+            message.classList.add("success");
+
+            window.open(url, "_blank", "noopener");
+          } catch (error) {
+            message.textContent = "Incorrect passcode or invalid encrypted link.";
+            message.classList.add("error");
+          }
+        });
+
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            button.click();
+          }
+        });
+
+        card.appendChild(tag);
+        card.appendChild(label);
+        card.appendChild(input);
+        card.appendChild(button);
+        card.appendChild(message);
+      }
+
+      return card;
+    }
+
+    resources.forEach((resource, index) => {
+      linksGrid.appendChild(createResourceCard(resource, index));
+    });
+
+    async function decryptUrl(encryptedPayload, passcode) {
+      const payload = JSON.parse(atob(encryptedPayload));
+
+      const salt = base64ToArrayBuffer(payload.salt);
+      const iv = base64ToArrayBuffer(payload.iv);
+      const encryptedData = base64ToArrayBuffer(payload.data);
+
+      const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(passcode),
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+      );
+
+      const key = await crypto.subtle.deriveKey(
+        {
+          name: "PBKDF2",
+          salt: salt,
+          iterations: 250000,
+          hash: "SHA-256"
+        },
+        keyMaterial,
+        {
+          name: "AES-GCM",
+          length: 256
+        },
+        false,
+        ["decrypt"]
+      );
+
+      const decryptedBuffer = await crypto.subtle.decrypt(
+        {
+          name: "AES-GCM",
+          iv: iv
+        },
+        key,
+        encryptedData
+      );
+
+      return new TextDecoder().decode(decryptedBuffer);
+    }
+
+    function base64ToArrayBuffer(base64) {
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+
+      return bytes.buffer;
+    }
+  </script>
 </body>
 </html>
